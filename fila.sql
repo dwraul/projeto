@@ -1,0 +1,5 @@
+CREATE TABLE fila (
+  id SERIAL PRIMARY KEY,
+  nome VARCHAR(100) NOT NULL,
+  criado_em TIMESTAMP DEFAULT NOW()
+);

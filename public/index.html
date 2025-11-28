@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <title>Gerenciamento de Fila</title>
+  <style>
+    body { font-family: Arial; max-width: 600px; margin: 40px auto; }
+    input, button { padding: 10px; margin: 5px 0; }
+    ul { padding-left: 20px; }
+  </style>
+</head>
+<body>
+
+  <h1>Gerenciamento de Fila</h1>
+
+  <h3>Adicionar pessoa</h3>
+  <input id="nome" placeholder="Nome da pessoa" />
+  <button onclick="adicionar()">Adicionar</button>
+
+  <h3>Fila Atual</h3>
+  <ul id="lista"></ul>
+
+  <button onclick="chamar()">Chamar Próximo</button>
+
+  <script>
+    async function carregar() {
+      const res = await fetch("/api/fila");
+      const dados = await res.json();
+      const lista = document.getElementById("lista");
+      lista.innerHTML = "";
+      dados.forEach(p => {
+        const li = document.createElement("li");
+        li.textContent = p.nome;
+        lista.appendChild(li);
+      });
+    }
+
+    async function adicionar() {
+      const nome = document.getElementById("nome").value;
+      await fetch("/api/fila", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ nome })
+      });
+      document.getElementById("nome").value = "";
+      carregar();
+    }
+
+    async function chamar() {
+      await fetch("/api/fila/proximo", { method: "DELETE" });
+      carregar();
+    }
+
+    carregar();
+  </script>
+
+</body>
+</html>
